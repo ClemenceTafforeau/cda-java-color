@@ -4,8 +4,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ColorTest {
@@ -14,8 +12,6 @@ public class ColorTest {
     private int green = 183;
     private int blue = 3;
     private String hexValue = "#FFB703";
-    private Character[] allowedNumbers = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
-    private Character[] allowedLetters = {'A', 'B', 'C', 'D', 'E', 'F'};
 
     private Color colorRgb;
     private Color colorHex;
@@ -83,7 +79,24 @@ public class ColorTest {
     }
 
     @Test
-    public void testToString() {
+    public void testConstructorArgIsString() {
+        String arg = hexValue;
+        Color color = new Color(hexValue);
+
+        assertInstanceOf(String.class, arg);
+        assertInstanceOf(Color.class, color);
+    }
+
+    @Test
+    public void testHexValueIsIncorrect() {
+        assertThrows(IllegalArgumentException.class, () -> colorHex.setHexValue("#FFFFFFFFFFFF"));
+        assertThrows(IllegalArgumentException.class, () -> colorHex.setHexValue("#FF"));
+        assertThrows(IllegalArgumentException.class, () -> colorHex.setHexValue("#GKL967"));
+        assertThrows(IllegalArgumentException.class, () -> colorHex.setHexValue("000000"));
+    }
+
+    @Test
+    public void testToStringWithCorrectValues() {
         String expected = "[value=#FFB703, r=255, g=183, b=3]";
         colorRgb.setRed(red);
         colorRgb.setGreen(green);
@@ -96,111 +109,16 @@ public class ColorTest {
     }
 
     @Test
-    public void testConstructorArgIsString() {
-        String arg = hexValue;
-        Color color = new Color(hexValue);
+    public void testToStringWithMissingHexadecimal() {
+        colorRgb.setRed(12);
+        colorRgb.setGreen(20);
+        colorRgb.setBlue(200);
 
-        assertInstanceOf(String.class, arg);
-        assertInstanceOf(Color.class, color);
+        assertThrows(NullPointerException.class, () -> colorRgb.toString());
     }
 
     @Test
-    public void testConstructorArgIsHexadecimal() {
-        String arg = hexValue;
-
-        assertEquals(7, arg.length());
-    }
-
-    @Test
-    public void testConstructorArgIsNotHexadecimal() {
-        String arg = "#FFFFFFFFF";
-
-        assertNotEquals(7, arg.length());
-        assertThrows(IllegalArgumentException.class, () -> new Color(arg));
-    }
-
-    @Test
-    public void testHexadecimalCharIsLetterOrDigit() {
-        String arg = hexValue;
-
-        assertAll(arg, () -> {
-            for (int i = 1; i < hexValue.length(); i++) {
-                assertTrue(Character.isLetterOrDigit(arg.charAt(i)));
-            }
-        });
-    }
-
-    @Test
-    public void testHexadecimalCharIsNotLetterOrDigit() {
-        String arg = "#FF%!44";
-
-        for (int i = 1; i < arg.length(); i++) {
-            assertFalse(Character.isLetterOrDigit(arg.charAt(i)));
-        }
-
-        assertThrows(IllegalArgumentException.class, () -> new Color(arg));
-    }
-
-    @Test
-    public void testHexadecimalStartsWithHashtag() {
-        String arg = hexValue;
-        char hashtag = '#';
-
-        assertEquals(hashtag, arg.charAt(0));
-    }
-
-    @Test
-    public void testHexadecimalDoesNotStartWithHashtag() {
-        String arg = "FFFFFF";
-        char hashtag = '#';
-
-        assertNotEquals(hashtag, arg.charAt(0));
-    }
-
-    @Test
-    public void testHexadecimalOnlyHasLettersWithUpperCase() {
-        String arg = hexValue;
-        String expected = "#FFB703";
-
-        assertEquals(expected, arg);
-    }
-
-    @Test
-    public void testHexadecimalDoesNotOnlyHaveLettersWithUpperCase() {
-        String arg = "#ffb703";
-        String expected = hexValue;
-
-        assertNotEquals(expected, arg);
-    }
-
-    @Test
-    public void testHexadecimalContainsCorrectValues() {
-        String arg = hexValue;
-
-        assertAll(arg, () -> {
-            for (int i = 1; i < arg.length(); i++) {
-                int finalI = i;
-                if (Character.isDigit(arg.charAt(finalI))) {
-                    assertTrue(Arrays.stream(allowedNumbers).anyMatch(numberAsCharacter -> numberAsCharacter.equals(arg.charAt(finalI))));
-                }
-                if (Character.isLetter(arg.charAt(finalI))) {
-                    assertTrue(Arrays.stream(allowedLetters).anyMatch(letterAsCharacter -> letterAsCharacter.equals(arg.charAt(finalI))));
-                }
-            }
-        });
-    }
-
-    @Test
-    public void testHexadecimalContainsIncorrectValues() {
-        String arg = "#GZ89PL";
-
-        assertAll(arg, () -> {
-            for (int i = 1; i < arg.length(); i++) {
-                int finalI = i;
-                if (Character.isLetter(arg.charAt(finalI))) {
-                    assertFalse(Arrays.stream(allowedLetters).anyMatch(letterAsCharacter -> letterAsCharacter.equals(arg.charAt(finalI))));
-                }
-            }
-        });
+    public void testToStringWithNoValues() {
+        assertThrows(IllegalArgumentException.class, () -> colorHex.toString());
     }
 }
