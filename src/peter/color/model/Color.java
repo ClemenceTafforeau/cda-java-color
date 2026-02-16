@@ -14,7 +14,7 @@ public class Color {
         return 0;
     }
 
-    public void setRed() {
+    public void setRed(int colorValue) {
         //
     }
 
@@ -22,7 +22,7 @@ public class Color {
         return 0;
     }
 
-    public void setGreen() {
+    public void setGreen(int colorValue) {
         //
     }
 
@@ -30,7 +30,7 @@ public class Color {
         return 0;
     }
 
-    public void setBlue() {
+    public void setBlue(int colorValue) {
         //
     }
 
@@ -38,11 +38,11 @@ public class Color {
         return 0;
     }
 
-    public void setHexValue() {
+    public void setHexValue(String colorValue) {
         //
     }
 
-    public String toString() {
+    public String toString(String hexValue, int red, int green, int blue) {
         return "";
     }
 }
